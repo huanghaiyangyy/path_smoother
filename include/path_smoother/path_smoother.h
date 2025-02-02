@@ -30,7 +30,8 @@ private:
     Vec2d curvatureTerm(Vec2d xi0, Vec2d xi1, Vec2d xi2);//曲率项，用于保证可转弯性及通行性
 
     //平滑项，用于将节点等距分布并尽量保持同一个方向
-    Vec2d smoothnessTerm(Vec2d xim, Vec2d xi, Vec2d xip);
+    Vec2d smoothnessTerm(Vec2d xim2, Vec2d xim1, Vec2d xi, Vec2d xip1,
+                       Vec2d xip2);
 
     Vec2d voronoiTerm(Vec2d xi);
 
@@ -49,7 +50,7 @@ private:
     float wObstacle_ = 0.2;
     float wVoronoi_ = 0.2;
     float wCurvature_ = 0.2;
-    float wSmoothness_ = 0.2;
+    float wSmoothness_ = 2;
 
     DynamicVoronoi voronoi_;
     cv::Mat map_img_;

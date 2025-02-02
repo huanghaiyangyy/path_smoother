@@ -3,7 +3,7 @@
 
 namespace Constants {
     /// [#] --- Limits the maximum search depth of the algorithm, possibly terminating without the solution
-    static const int max_iterations = 200;
+    static const int max_iterations = 10000;
 
     /// [m] --- The minimum turning radius of the vehicle
     static const float min_turn_radius = 6;

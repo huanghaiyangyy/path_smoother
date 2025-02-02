@@ -39,16 +39,22 @@ void PathSmoother::smoothPath() {
   //Todo:make sure the cycle end condition
   while (iterations < Constants::max_iterations) {
     for (int i = 1; i < smoothed_path_.size() - 1; ++i) {
+      Vec2d xim2(smoothed_path_[i - 2].x(), smoothed_path_[i - 2].y());
       Vec2d xim1(smoothed_path_[i - 1].x(), smoothed_path_[i - 1].y());
       Vec2d xi(smoothed_path_[i].x(), smoothed_path_[i].y());
       Vec2d xip1(smoothed_path_[i + 1].x(), smoothed_path_[i + 1].y());
+      Vec2d xip2(smoothed_path_[i + 2].x(), smoothed_path_[i + 2].y());
       Vec2d correction;
 
       correction = correction - obstacleTerm(xi);
       if (!isOnGrid(xi + correction)) { continue; }
 
-      correction = correction - smoothnessTerm(xim1, xi, xip1);
-      if (!isOnGrid(xi + correction)) { continue; }
+      if (i >= 2 && i < smoothed_path_.size() - 2) {
+        correction = correction - smoothnessTerm(xim2, xim1, xi, xip1, xip2);
+        if (!isOnGrid(xi + correction)) {
+          continue;
+        }
+      }
 
       correction = correction - curvatureTerm(xim1, xi, xip1);
       if (!isOnGrid(xi + correction)) { continue; }
@@ -187,9 +193,10 @@ Vec2d PathSmoother::curvatureTerm(Vec2d xim1, Vec2d xi, Vec2d xip1) {
   }
 }
 
-Vec2d PathSmoother::smoothnessTerm(Vec2d xim, Vec2d xi, Vec2d xip) {
+Vec2d PathSmoother::smoothnessTerm(Vec2d xim2, Vec2d xim1, Vec2d xi, Vec2d xip1,
+                                   Vec2d xip2) {
   // according to paper "Practical search techniques in path planning for autonomous driving"
-  return wSmoothness_ * (-4) * (xip - 2*xi + xim);
+  return wSmoothness_ * (xim2 - 4 * xim1 + 6 * xi - 4 * xip1 + xip2);
 }
 
 bool PathSmoother::isOnGrid(Vec2d vec) {
