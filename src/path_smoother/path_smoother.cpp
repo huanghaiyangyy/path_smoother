@@ -8,9 +8,17 @@ PathSmoother::PathSmoother(cv::Mat map_img, const std::vector<Vec2d>& cv_path) {
   map_width_ = map_img.cols;
   if(map_img.channels() != 1) {
     map_img_ = map_img.clone();
+#if CV_VERSION_EPOCH == 2
     cv::cvtColor(map_img, map_img, CV_BGR2GRAY);
+#else
+    cv::cvtColor(map_img, map_img, cv::COLOR_BGR2GRAY);
+#endif
   } else {
+#if CV_VERSION_EPOCH == 2
     cv::cvtColor(map_img, map_img_, CV_GRAY2BGR);
+#else
+    cv::cvtColor(map_img, map_img_, cv::COLOR_GRAY2BGR);
+#endif
   }
   voronoi_.buildVoronoiFromImage(map_img);
 
